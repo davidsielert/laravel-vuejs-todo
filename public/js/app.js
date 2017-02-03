@@ -11244,37 +11244,26 @@ module.exports = g;
 
 __webpack_require__(33);
 VueRouter = __webpack_require__(42);
+Vue.use(VueRouter);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
-
-Vue.component('tasks', __webpack_require__(38));
+var Tasks = __webpack_require__(38);
+Vue.component('tasks', Tasks);
 Vue.component('taskitem', __webpack_require__(37));
 
 var Foo = __webpack_require__(55);
 var Bar = __webpack_require__(57);
 
-// 2. Define some routes
-// Each route should map to a component. The "component" can
-// either be an actual component constructor created via
-// Vue.extend(), or just a component options object.
-// We'll talk about nested routes later.
-var routes = [{ path: '/', component: Foo }, { path: '/bar', component: Bar }];
+var routes = [{ path: '/', component: Foo }, { path: '/bar', component: Bar }, { path: '/tasks', component: Tasks }];
 
-// 3. Create the router instance and pass the `routes` option
-// You can pass in additional options here, but let's
-// keep it simple for now.
 var router = new VueRouter({
     routes: routes
 });
 
-Vue.use(VueRouter);
-// 4. Create and mount the root instance.
-// Make sure to inject the router with the router option to make the
-// whole app router-aware.
 var app = new Vue({
     router: router
 }).$mount('#app');
