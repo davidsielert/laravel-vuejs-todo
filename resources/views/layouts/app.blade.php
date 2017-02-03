@@ -44,9 +44,9 @@
             <div class="collapse navbar-collapse" id="app-navbar-collapse">
                 <!-- Left Side Of Navbar -->
                 <ul class="nav navbar-nav">
-                    <li {{ (Request::is('home') ? 'class=active' : '') }}><a href="{{action('HomeController@index')}}">Home </a>
-                    </li>
+
                     @if(Auth::check())
+                        <li {{ (Request::is('home') ? 'class=active' : '') }}><a href="{{action('HomeController@index')}}">Home </a></li>
                         <li {{(Request::is('tasks') ? 'class=active' : '') }}><a
                                     href="{{action('TasksController@index')}}">Tasks </a></li>
                     @endif
