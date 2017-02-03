@@ -46,7 +46,8 @@
             },
             getTasks() {
                 this.$http.get('api/tasks').then(response => {
-                    this.list = response.data
+                    console.log('response',response);
+                    this.list = response.body;
                 }, response => {
                     toastr.error('Error while retrieving tasks');
                 })

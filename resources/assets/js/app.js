@@ -1,45 +1,57 @@
-
-/**
- * First we will load all of this project's JavaScript dependencies which
- * includes Vue and other libraries. It is a great starting point when
- * building robust, powerful web applications using Vue and Laravel.
- */
-
 require('./bootstrap');
-VueRouter = require('vue-router');
+const VueRouter = require('vue-router');
+
+const Lockr = require('lockr');
+
+Lockr.set('username', 'Coyote'); // Saved as string
+console.log(Lockr.get('username'));
+
 Vue.use(VueRouter);
 
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
-const Tasks = require('./components/Tasks.vue');
-Vue.component('tasks', Tasks);
-Vue.component('taskitem',require('./components/TaskItem.vue'));
 
 
-const Foo = require('./components/foo.vue');
+import Foo from './components/foo.vue';
 const Bar = require('./components/bar.vue');
+const Tasks = require('./components/Tasks.vue');
 
-
-
-
-const routes = [
-    { path: '/', component: Foo },
-    { path: '/bar', component: Bar },
-    { path: '/tasks', component: Tasks }
-]
+const routes =   [
+    {path: '/', component: Foo},
+    {path: '/bar', component: Bar},
+    {path: '/tasks', component: Tasks}
+];
 
 const router = new VueRouter({
     routes
 });
 
+Vue.component('tasks', Tasks);
+Vue.component('taskitem', require('./components/TaskItem.vue'));
 
+let session = window.sessionStorage,
+    log = console && console.log || function(){};
+Vue.http.interceptors.push(function (request, next) {
+    if (request.method.toLowerCase() === 'get') {
+        var cache = session.getItem(`CACHE_${request.url}`);
+
+        if (cache) {
+            log('cache hit', request.url);
+            next(request.respondWith(JSON.parse(cache), {status: 200, statusText: 'Ok'}));
+        } else {
+            log('cache miss', request.url);
+        }
+    }
+
+
+    next( function (response) {
+        let {status, statusText, body} = response;
+        if (status === 200 && request.method.toLowerCase() === 'get') {
+            log('cache save', request.url);
+            session.setItem(`CACHE_${request.url}`, JSON.stringify(body));
+        }
+        request.respondWith(body, {status, statusText});
+    });
+});
 const app = new Vue({
-    router
-}).$mount('#app')
-
-// const app = new Vue({
-//     el: '#app'
-// });
+    router,
+    el: '#app'
+});
