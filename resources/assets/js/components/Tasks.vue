@@ -34,6 +34,9 @@
         mounted: function () {
             this.getTasks();
         },
+        components: {
+            taskitem: require('./taskitem.vue')
+        },
         methods: {
             createTask:function(task) {
                 console.log('creating');
@@ -44,8 +47,11 @@
                 })
 
             },
-            getTasks() {
-                this.$http.get('api/tasks').then(response => {
+            getTasks(useCache = true ) {
+                //can't set boolean vars for headers ..
+                if (useCache) useCache = "true";
+                useCache = "false";
+                this.$http.get('api/tasks',{headers:{useCache}}).then(response => {
                     console.log('response',response);
                     this.list = response.body;
                 }, response => {

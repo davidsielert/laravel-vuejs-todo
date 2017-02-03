@@ -10,6 +10,7 @@
                 <button v-on:click="editTask(task)" class="btn btn-info">Edit</button>
             </div>
             <button v-show="edit" v-on:click="saveTask(task)" class="btn btn-info">Save</button>
+            <button v-show="edit" v-on:click="cancelEdit()" class="btn btn-danger">Cancel</button>
         </div>
     </div>
 </template>
@@ -28,23 +29,25 @@
         methods: {
             editTask: function (task) {
                 this.edit = true;
-                console.log('edited', task);
+            },
+            cancelEdit: function(task) {
+                this.edit = false;
+
             },
             deleteTask: function (task) {
                this.$http.delete('api/task/'+task.id).then(response => {
                    toastr.success('Task successfully deleted!')
-                   this.getTasks();
+                   this.getTasks(true);
                })
             },
             saveTask(task) {
                 this.$http.patch('api/task/'+task.id,task).then(response => {
                    toastr.success('Task successfully updated!');
                    this.edit = false;
-                   this.getTasks();
+                   this.getTasks(true);
                 },response => {
                     toastr.error('error updating task!');
                 });
-                console.log('saved');
             }
         }
     }

@@ -25,20 +25,23 @@ const router = new VueRouter({
 });
 
 Vue.component('tasks', Tasks);
-Vue.component('taskitem', require('./components/TaskItem.vue'));
+//Vue.component('taskitem', require('./components/TaskItem.vue'));
 
 let session = window.sessionStorage,
     log = console && console.log || function(){};
 Vue.http.interceptors.push(function (request, next) {
     if (request.method.toLowerCase() === 'get') {
         var cache = session.getItem(`CACHE_${request.url}`);
-
-        if (cache) {
-            log('cache hit', request.url);
-            next(request.respondWith(JSON.parse(cache), {status: 200, statusText: 'Ok'}));
-        } else {
-            log('cache miss', request.url);
-        }
+        debugger;
+        if (request.headers.map.useCache !== "false") {
+            if (cache) {
+                log('cache hit', request.url);
+                next(request.respondWith(JSON.parse(cache), {status: 200, statusText: 'Ok'}));
+            } else {
+                log('cache miss', request.url);
+            }
+        } else
+            log('cached turned off for request');
     }
 
 

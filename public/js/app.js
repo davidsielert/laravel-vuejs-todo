@@ -11260,20 +11260,22 @@ var router = new VueRouter({
 });
 
 Vue.component('tasks', Tasks);
-Vue.component('taskitem', __webpack_require__(38));
+//Vue.component('taskitem', require('./components/TaskItem.vue'));
 
 var session = window.sessionStorage,
     log = console && console.log || function () {};
 Vue.http.interceptors.push(function (request, next) {
     if (request.method.toLowerCase() === 'get') {
         var cache = session.getItem('CACHE_' + request.url);
-
-        if (cache) {
-            log('cache hit', request.url);
-            next(request.respondWith(JSON.parse(cache), { status: 200, statusText: 'Ok' }));
-        } else {
-            log('cache miss', request.url);
-        }
+        debugger;
+        if (request.headers.map.useCache !== "false") {
+            if (cache) {
+                log('cache hit', request.url);
+                next(request.respondWith(JSON.parse(cache), { status: 200, statusText: 'Ok' }));
+            } else {
+                log('cache miss', request.url);
+            }
+        } else log('cached turned off for request');
     }
 
     next(function (response) {
@@ -12141,68 +12143,7 @@ module.exports = function spread(callback) {
 
 
 /***/ }),
-/* 31 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["default"] = {
-    props: ['task', 'getTasks'],
-    data: function data() {
-        return {
-            edit: false
-        };
-    },
-    mounted: function mounted() {
-        console.log('TaskItem mounted.');
-    },
-
-    methods: {
-        editTask: function editTask(task) {
-            this.edit = true;
-            console.log('edited', task);
-        },
-        deleteTask: function deleteTask(task) {
-            var _this = this;
-
-            this.$http.delete('api/task/' + task.id).then(function (response) {
-                toastr.success('Task successfully deleted!');
-                _this.getTasks();
-            });
-        },
-        saveTask: function saveTask(task) {
-            var _this2 = this;
-
-            this.$http.patch('api/task/' + task.id, task).then(function (response) {
-                toastr.success('Task successfully updated!');
-                _this2.edit = false;
-                _this2.getTasks();
-            }, function (response) {
-                toastr.error('error updating task!');
-            });
-            console.log('saved');
-        }
-    }
-};
-
-/***/ }),
+/* 31 */,
 /* 32 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -12244,6 +12185,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     mounted: function mounted() {
         this.getTasks();
     },
+    components: {
+        taskitem: __webpack_require__(62)
+    },
     methods: {
         createTask: function createTask(task) {
             var _this = this;
@@ -12258,7 +12202,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         getTasks: function getTasks() {
             var _this2 = this;
 
-            this.$http.get('api/tasks').then(function (response) {
+            var useCache = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+
+            //can't set boolean vars for headers ..
+            if (useCache) useCache = "true";
+            useCache = "false";
+            this.$http.get('api/tasks', { headers: { useCache: useCache } }).then(function (response) {
                 console.log('response', response);
                 _this2.list = response.body;
             }, function (response) {
@@ -32236,40 +32185,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
 
 
 /***/ }),
-/* 38 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Component = __webpack_require__(3)(
-  /* script */
-  __webpack_require__(31),
-  /* template */
-  __webpack_require__(45),
-  /* scopeId */
-  null,
-  /* cssModules */
-  null
-)
-Component.options.__file = "C:\\Users\\david\\WebstormProjects\\laravel\\resources\\assets\\js\\components\\TaskItem.vue"
-if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
-if (Component.options.functional) {console.error("[vue-loader] TaskItem.vue: functional components are not supported with templates, they should use render functions.")}
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-de84b780", Component.options)
-  } else {
-    hotAPI.reload("data-v-de84b780", Component.options)
-  }
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
+/* 38 */,
 /* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -32473,92 +32389,7 @@ if (false) {
 }
 
 /***/ }),
-/* 45 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "task panel panel-default"
-  }, [_c('div', {
-    staticClass: "panel-body"
-  }, [_c('span', {
-    directives: [{
-      name: "show",
-      rawName: "v-show",
-      value: (!_vm.edit),
-      expression: "!edit"
-    }]
-  }, [_vm._v(_vm._s(_vm.task.body))]), _vm._v(" "), _c('input', {
-    directives: [{
-      name: "show",
-      rawName: "v-show",
-      value: (_vm.edit),
-      expression: "edit"
-    }, {
-      name: "model",
-      rawName: "v-model",
-      value: (_vm.task.body),
-      expression: "task.body"
-    }],
-    attrs: {
-      "type": "text"
-    },
-    domProps: {
-      "value": _vm._s(_vm.task.body)
-    },
-    on: {
-      "input": function($event) {
-        if ($event.target.composing) { return; }
-        _vm.task.body = $event.target.value
-      }
-    }
-  })]), _vm._v(" "), _c('div', {
-    staticClass: "panel-footer"
-  }, [_c('div', {
-    directives: [{
-      name: "show",
-      rawName: "v-show",
-      value: (!_vm.edit),
-      expression: "!edit"
-    }]
-  }, [_c('button', {
-    staticClass: "btn btn-danger",
-    on: {
-      "click": function($event) {
-        _vm.deleteTask(_vm.task)
-      }
-    }
-  }, [_vm._v("Delete")]), _vm._v(" "), _c('button', {
-    staticClass: "btn btn-info",
-    on: {
-      "click": function($event) {
-        _vm.editTask(_vm.task)
-      }
-    }
-  }, [_vm._v("Edit")])]), _vm._v(" "), _c('button', {
-    directives: [{
-      name: "show",
-      rawName: "v-show",
-      value: (_vm.edit),
-      expression: "edit"
-    }],
-    staticClass: "btn btn-info",
-    on: {
-      "click": function($event) {
-        _vm.saveTask(_vm.task)
-      }
-    }
-  }, [_vm._v("Save")])])])
-},staticRenderFns: []}
-module.exports.render._withStripped = true
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-de84b780", module.exports)
-  }
-}
-
-/***/ }),
+/* 45 */,
 /* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -45146,6 +44977,203 @@ module.exports = __webpack_require__(12);
 
 }));
 
+
+/***/ }),
+/* 61 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = {
+    props: ['task', 'getTasks'],
+    data: function data() {
+        return {
+            edit: false
+        };
+    },
+    mounted: function mounted() {
+        console.log('TaskItem mounted.');
+    },
+
+    methods: {
+        editTask: function editTask(task) {
+            this.edit = true;
+        },
+        cancelEdit: function cancelEdit(task) {
+            this.edit = false;
+        },
+        deleteTask: function deleteTask(task) {
+            var _this = this;
+
+            this.$http.delete('api/task/' + task.id).then(function (response) {
+                toastr.success('Task successfully deleted!');
+                _this.getTasks(true);
+            });
+        },
+        saveTask: function saveTask(task) {
+            var _this2 = this;
+
+            this.$http.patch('api/task/' + task.id, task).then(function (response) {
+                toastr.success('Task successfully updated!');
+                _this2.edit = false;
+                _this2.getTasks(true);
+            }, function (response) {
+                toastr.error('error updating task!');
+            });
+        }
+    }
+};
+
+/***/ }),
+/* 62 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Component = __webpack_require__(3)(
+  /* script */
+  __webpack_require__(61),
+  /* template */
+  __webpack_require__(63),
+  /* scopeId */
+  null,
+  /* cssModules */
+  null
+)
+Component.options.__file = "C:\\Users\\david\\WebstormProjects\\laravel\\resources\\assets\\js\\components\\taskitem.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] taskitem.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-f9d02800", Component.options)
+  } else {
+    hotAPI.reload("data-v-f9d02800", Component.options)
+  }
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 63 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "task panel panel-default"
+  }, [_c('div', {
+    staticClass: "panel-body"
+  }, [_c('span', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (!_vm.edit),
+      expression: "!edit"
+    }]
+  }, [_vm._v(_vm._s(_vm.task.body))]), _vm._v(" "), _c('input', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.edit),
+      expression: "edit"
+    }, {
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.task.body),
+      expression: "task.body"
+    }],
+    attrs: {
+      "type": "text"
+    },
+    domProps: {
+      "value": _vm._s(_vm.task.body)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.task.body = $event.target.value
+      }
+    }
+  })]), _vm._v(" "), _c('div', {
+    staticClass: "panel-footer"
+  }, [_c('div', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (!_vm.edit),
+      expression: "!edit"
+    }]
+  }, [_c('button', {
+    staticClass: "btn btn-danger",
+    on: {
+      "click": function($event) {
+        _vm.deleteTask(_vm.task)
+      }
+    }
+  }, [_vm._v("Delete")]), _vm._v(" "), _c('button', {
+    staticClass: "btn btn-info",
+    on: {
+      "click": function($event) {
+        _vm.editTask(_vm.task)
+      }
+    }
+  }, [_vm._v("Edit")])]), _vm._v(" "), _c('button', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.edit),
+      expression: "edit"
+    }],
+    staticClass: "btn btn-info",
+    on: {
+      "click": function($event) {
+        _vm.saveTask(_vm.task)
+      }
+    }
+  }, [_vm._v("Save")]), _vm._v(" "), _c('button', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.edit),
+      expression: "edit"
+    }],
+    staticClass: "btn btn-danger",
+    on: {
+      "click": function($event) {
+        _vm.cancelEdit()
+      }
+    }
+  }, [_vm._v("Cancel")])])])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-f9d02800", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);
