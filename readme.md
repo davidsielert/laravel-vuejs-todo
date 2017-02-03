@@ -2,7 +2,9 @@ A very small vuejs app with a laravel backend does not utilize vue-router.
 clone repo and use laraedit docker image enter container and run in /var/www/html/app
 
 ```
-composer install  
+composer install 
+npm install
+npm run dev
 php artisan migrate
 ```
 
