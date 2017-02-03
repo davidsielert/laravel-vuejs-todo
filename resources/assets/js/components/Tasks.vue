@@ -47,10 +47,12 @@
                 })
 
             },
-            getTasks(useCache = true ) {
+            getTasks(useCache ) {
                 //can't set boolean vars for headers ..
-                if (useCache) useCache = "true";
-                useCache = "false";
+                debugger;
+                if (useCache == false) useCache = "false";
+                if (useCache == true) useCache = "true";
+
                 this.$http.get('api/tasks',{headers:{useCache}}).then(response => {
                     console.log('response',response);
                     this.list = response.body;

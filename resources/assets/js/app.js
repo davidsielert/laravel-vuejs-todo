@@ -32,7 +32,7 @@ let session = window.sessionStorage,
 Vue.http.interceptors.push(function (request, next) {
     if (request.method.toLowerCase() === 'get') {
         var cache = session.getItem(`CACHE_${request.url}`);
-        debugger;
+        //debugger;
         if (request.headers.map.useCache !== "false") {
             if (cache) {
                 log('cache hit', request.url);

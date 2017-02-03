@@ -11267,7 +11267,7 @@ var session = window.sessionStorage,
 Vue.http.interceptors.push(function (request, next) {
     if (request.method.toLowerCase() === 'get') {
         var cache = session.getItem('CACHE_' + request.url);
-        debugger;
+        //debugger;
         if (request.headers.map.useCache !== "false") {
             if (cache) {
                 log('cache hit', request.url);
@@ -12199,14 +12199,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 toastr.success('Task created successfully!');
             });
         },
-        getTasks: function getTasks() {
+        getTasks: function getTasks(useCache) {
             var _this2 = this;
 
-            var useCache = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
-
             //can't set boolean vars for headers ..
-            if (useCache) useCache = "true";
-            useCache = "false";
+            debugger;
+            if (useCache == false) useCache = "false";
+            if (useCache == true) useCache = "true";
+
             this.$http.get('api/tasks', { headers: { useCache: useCache } }).then(function (response) {
                 console.log('response', response);
                 _this2.list = response.body;
@@ -45025,7 +45025,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             this.$http.delete('api/task/' + task.id).then(function (response) {
                 toastr.success('Task successfully deleted!');
-                _this.getTasks(true);
+                _this.getTasks(false);
             });
         },
         saveTask: function saveTask(task) {
@@ -45034,7 +45034,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.$http.patch('api/task/' + task.id, task).then(function (response) {
                 toastr.success('Task successfully updated!');
                 _this2.edit = false;
-                _this2.getTasks(true);
+                _this2.getTasks(false);
             }, function (response) {
                 toastr.error('error updating task!');
             });
@@ -45104,6 +45104,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       value: (_vm.task.body),
       expression: "task.body"
     }],
+    staticClass: "col-md-12",
     attrs: {
       "type": "text"
     },

@@ -2,7 +2,7 @@
     <div class="task panel panel-default" >
         <div class="panel-body">
             <span v-show="!edit">{{task.body}}</span>
-            <input v-show="edit" type="text" v-model="task.body"/>
+            <input v-show="edit" type="text" v-model="task.body" class="col-md-12"/>
         </div>
         <div class="panel-footer">
             <div v-show="!edit">
@@ -37,14 +37,14 @@
             deleteTask: function (task) {
                this.$http.delete('api/task/'+task.id).then(response => {
                    toastr.success('Task successfully deleted!')
-                   this.getTasks(true);
+                   this.getTasks(false);
                })
             },
             saveTask(task) {
                 this.$http.patch('api/task/'+task.id,task).then(response => {
                    toastr.success('Task successfully updated!');
                    this.edit = false;
-                   this.getTasks(true);
+                   this.getTasks(false);
                 },response => {
                     toastr.error('error updating task!');
                 });
