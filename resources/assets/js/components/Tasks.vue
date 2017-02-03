@@ -25,16 +25,7 @@
     export default {
         data: function () {
             return {
-                list: [
-                    {
-                        id: null,
-                        body: "Basic task example 1"
-                    },
-                    {
-                        id: null,
-                        body: "another Basic task example"
-                    },
-                ],
+                list: [],
                 task: {
                     body: ''
                 }

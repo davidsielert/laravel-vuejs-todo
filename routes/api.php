@@ -18,7 +18,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get('tasks', function () {
-    return App\Task::latest()->orderBy('created_at', 'desc')->get();
+    return App\Task::orderBy('created_at')->get();
 });
 
 Route::get('task/{id}', function ($id) {
