@@ -47,13 +47,12 @@
                 })
 
             },
-            getTasks(useCache ) {
-                //can't set boolean vars for headers ..
-                debugger;
-                if (useCache == false) useCache = "false";
-                if (useCache == true) useCache = "true";
-
-                this.$http.get('api/tasks',{headers:{useCache}}).then(response => {
+            getTasks(useCache = true) {
+                //invalidate cache if not using
+                if (false == useCache) {
+                    sessionStorage.removeItem('CACHE_api/tasks');
+                }
+                this.$http.get('api/tasks').then(response => {
                     console.log('response',response);
                     this.list = response.body;
                 }, response => {

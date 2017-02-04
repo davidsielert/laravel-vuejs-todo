@@ -12199,15 +12199,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 toastr.success('Task created successfully!');
             });
         },
-        getTasks: function getTasks(useCache) {
+        getTasks: function getTasks() {
             var _this2 = this;
 
-            //can't set boolean vars for headers ..
-            debugger;
-            if (useCache == false) useCache = "false";
-            if (useCache == true) useCache = "true";
+            var useCache = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
 
-            this.$http.get('api/tasks', { headers: { useCache: useCache } }).then(function (response) {
+            //invalidate cache if not using
+            if (false == useCache) {
+                sessionStorage.removeItem('CACHE_api/tasks');
+            }
+            this.$http.get('api/tasks').then(function (response) {
                 console.log('response', response);
                 _this2.list = response.body;
             }, function (response) {
